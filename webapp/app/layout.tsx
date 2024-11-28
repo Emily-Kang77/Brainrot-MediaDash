@@ -3,6 +3,8 @@ import "./globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
 import localFont from "next/font/local";
+import NavBar from "./components/NavBar";
+import MobileNavBar from "./components/MobileNavBar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <ClerkProvider
+        publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         appearance={{
           variables: { colorPrimary: "#000000" },
           elements: {
@@ -39,13 +42,13 @@ export default function RootLayout({
         }}
       >
         <body className={`min-h-screen flex flex-col antialiased`}>
+          <NavBar />
           {children}
-
-          HELLO 
-
-          <SignOutButton >
+          HELLO
+          {/* <SignOutButton>
             <button>Sign out </button>
-          </SignOutButton>
+          </SignOutButton> */}
+          <MobileNavBar />
         </body>
       </ClerkProvider>
 
