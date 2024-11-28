@@ -1,3 +1,4 @@
+// This file probably isn't necessary
 export default {
   'code[class*="language-"]': {
     color: '#c5c8c6',

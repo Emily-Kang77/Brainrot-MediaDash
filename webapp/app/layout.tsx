@@ -1,4 +1,4 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, SignOutButton } from "@clerk/nextjs";
 import "./globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
@@ -40,6 +40,12 @@ export default function RootLayout({
       >
         <body className={`min-h-screen flex flex-col antialiased`}>
           {children}
+
+          HELLO 
+
+          <SignOutButton >
+            <button>Sign out </button>
+          </SignOutButton>
         </body>
       </ClerkProvider>
 

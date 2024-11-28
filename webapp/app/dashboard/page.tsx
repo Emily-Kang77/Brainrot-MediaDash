@@ -1,8 +1,5 @@
-import { UserDetails } from "../components/user-details";
-import { LearnMore } from "../components/learn-more";
 import { Footer } from "../components/footer";
-import { ClerkLogo } from "../components/clerk-logo";
-import { NextLogo } from "../components/next-logo";
+import { SignOutButton } from "@clerk/nextjs";
 
 import { DASHBOARD_CARDS } from "../consts/cards";
 
@@ -14,6 +11,11 @@ export default async function DashboardPage() {
           <div>
             <h1>We think you'll like these</h1>
           </div>
+
+          <SignOutButton >
+            <button>Sign out </button>
+          </SignOutButton>
+          
         </div>
       </main>
       
