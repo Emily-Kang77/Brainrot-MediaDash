@@ -21,6 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+
+      
+
       <ClerkProvider
         appearance={{
           variables: { colorPrimary: "#000000" },
