@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useRouter } from 'next/navigation';
 import { LANDING_CARDS } from "../consts/landing-cards";
-import LandingCard from "../components/landing-card";
+import LandingCard from "../components/LandingCard";
 // import { button } from 'daisyui';
 import Image from 'next/image'
 import homeScreenImg from '../../public/homescreen.png'
