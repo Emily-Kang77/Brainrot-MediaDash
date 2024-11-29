@@ -7,13 +7,11 @@ from langchain.chains.llm import LLMChain
 from requests.exceptions import RequestException
 import tmdbsimple as tmdb
 from imdb import IMDb
+from API_KEYS import GEMINI_KEY, TMDB_KEY
 
 
-print("Executing script:", sys.argv)
-print("Number arguments: ", len(sys.argv))
-
-os.environ["GOOGLE_API_KEY"] = "AIzaSyCVH3pu8GLqkVWVCC0yIhgY9nFZq5zn2pA"
-tmdb.API_KEY = "a3e67ba311db7f67fe03dd5fa48f61bc"
+os.environ["GOOGLE_API_KEY"] = str(GEMINI_KEY)
+os.environ["TMDB_API_KEY"] = str(TMDB_KEY)
 
 
 def parse_csv(csv_file_path):
