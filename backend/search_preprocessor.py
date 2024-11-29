@@ -1,8 +1,13 @@
 from langchain_google_genai import ChatGoogleGenerativeAI as gemini
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from mediaDash_backend import get_scraping_instructions
+from mediaDash_backend import LLMRecommendations
+from supabase import create_client
+import pandas as pd
+import os
+import re
 import json
+
 
 def generate_search_queries(user_preferences):
     """
@@ -56,30 +61,59 @@ def process_search_results(queries_results):
     chain = LLMChain(llm=llm, prompt=prompt)
     response = chain.invoke({"queries_results": str(queries_results), "previous_titles": str(queries_results.get('previous_titles', []))})
     return response.text
-
 def preprocess_search(user_data):
     """
     Main function to preprocess search using multiple AI-generated queries.
-    
-    Args:
-        user_data: Dictionary containing user preferences including:
-            - genre: Preferred genre
-            - mood_keywords: Keywords describing desired mood
-            - previous_titles: Previously enjoyed titles
-            - subscriptions: Available streaming subscriptions
-            
-    Returns:
-        str: Processed recommendations based on multiple search queries
     """
+    
+    
     # generate multiple search queries w Gemini
     search_queries = generate_search_queries(user_data)
     res = []
     
-    # process each query through the existing scraping system
     for query in search_queries:
-        # integration with mediaDash_backend.py
-        scraped_data = get_scraping_instructions({"search_query": query, **user_data})
-        res.append({"query": query, "results": scraped_data})
+        query_data = pd.DataFrame([{
+            "search_query": query,
+            "genre": user_data["genre"],
+            "mood_keywords": user_data["mood_keywords"], 
+            "previous_titles": user_data["previous_titles"],
+            "subscriptions": user_data.get("subscriptions", "")
+        }])
+        
+        temp_csv_path = "temp_query.csv"
+        query_data.to_csv(temp_csv_path, index=False)
+        tempRec = LLMRecommendations(temp_csv_path)
+        res.append({"query": query, "results": tempRec})
+        os.remove(temp_csv_path)
     
-    finalrec= process_search_results(res)
+    finalrec = process_search_results(res)
+    print(send_recommendations_to_supabase(user_id, finalrec))
+    
     return finalrec
+
+def extract_titles(recommendation_text):
+    # This regex pattern assumes titles are in quotes or after a colon
+    pattern = r'"([^"]*)"|\d+\.\s*([^:]+):'
+    matches = re.findall(pattern, recommendation_text)
+    titles = [match[0] or match[1] for match in matches if match[0] or match[1]]
+    return titles
+
+def send_recommendations_to_supabase(user_id, recommendation_text):
+    # Extract titles from the recommendation
+    titles = extract_titles(recommendation_text)
+    
+    # Prepare data for Supabase
+    data = {
+        "user_id": user_id,
+        "previous_titles": titles
+    }
+    
+    # Initialize Supabase client
+    url = "YOUR_SUPABASE_URL"
+    key = "YOUR_SUPABASE_KEY"
+    supabase = create_client(url, key)
+    
+    # Insert data into Supabase
+    response = supabase.table("mediaDash_user_data").insert(data).execute()
+    
+    return response
