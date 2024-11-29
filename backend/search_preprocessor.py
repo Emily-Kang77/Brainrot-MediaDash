@@ -2,10 +2,12 @@ from langchain_google_genai import ChatGoogleGenerativeAI as gemini
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from mediaDash_backend import LLMRecommendations
+from supabase import create_client
 import pandas as pd
 import os
-
+import re
 import json
+
 
 def generate_search_queries(user_preferences):
     """
@@ -63,6 +65,8 @@ def preprocess_search(user_data):
     """
     Main function to preprocess search using multiple AI-generated queries.
     """
+    
+    
     # generate multiple search queries w Gemini
     search_queries = generate_search_queries(user_data)
     res = []
@@ -83,4 +87,33 @@ def preprocess_search(user_data):
         os.remove(temp_csv_path)
     
     finalrec = process_search_results(res)
+    print(send_recommendations_to_supabase(user_id, finalrec))
+    
     return finalrec
+
+def extract_titles(recommendation_text):
+    # This regex pattern assumes titles are in quotes or after a colon
+    pattern = r'"([^"]*)"|\d+\.\s*([^:]+):'
+    matches = re.findall(pattern, recommendation_text)
+    titles = [match[0] or match[1] for match in matches if match[0] or match[1]]
+    return titles
+
+def send_recommendations_to_supabase(user_id, recommendation_text):
+    # Extract titles from the recommendation
+    titles = extract_titles(recommendation_text)
+    
+    # Prepare data for Supabase
+    data = {
+        "user_id": user_id,
+        "previous_titles": titles
+    }
+    
+    # Initialize Supabase client
+    url = "YOUR_SUPABASE_URL"
+    key = "YOUR_SUPABASE_KEY"
+    supabase = create_client(url, key)
+    
+    # Insert data into Supabase
+    response = supabase.table("mediaDash_user_data").insert(data).execute()
+    
+    return response
