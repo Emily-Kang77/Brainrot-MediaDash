@@ -12,7 +12,7 @@ export default function AppBar() {
 
   return (
     <SignedIn>
-      <div className="px-4 md:px-6 lg:px-9 2xl:px-10 flex justify-between items-center p-3">
+      <div className="px-2 md:px-6 lg:px-9 2xl:px-10 py-4 flex justify-between items-center">
         <button
           className="px-3 py-1.5 text-white font-semibold bg-red-600 hover:bg-red-700 rounded-lg"
           onClick={() => {
@@ -26,19 +26,28 @@ export default function AppBar() {
           <SearchBar />
         </div>
 
-        <Link
-          href="/dashboard"
-          className="hidden lg:block mt-1 px-5 py-2.5 rounded-full bg-[#131316] hover:bg-gray-900 text-white font-semibold"
-        >
-          Dashboard
-        </Link>
+        <div className="hidden lg:flex gap-x-6 xl:gap-x-6">
+          <Link
+            href="/dashboard"
+            className="px-5 py-2 rounded-full bg-[#131316] hover:bg-gray-900 text-white font-semibold"
+          >
+            Dashboard
+          </Link>
 
-        <div className="hidden lg:block">
-          <SignOutButton>
-            <button className="px-3 py-1.5 bg-blue-800 hover:bg-blue-700 font-semibold text-white rounded-lg">
-              Sign out
-            </button>
-          </SignOutButton>
+          <Link
+            href="/user-profile"
+            className="px-5 py-2 rounded-full bg-[#131316] hover:bg-gray-900 text-white font-semibold"
+          >
+            User
+          </Link>
+
+          <div>
+            <SignOutButton>
+              <button className="px-3 py-1.5 bg-blue-800 hover:bg-blue-700 font-semibold text-white rounded-lg">
+                Sign out
+              </button>
+            </SignOutButton>
+          </div>
         </div>
 
         <div className="hidden md:block lg:hidden w-16 h-[41px] px-4 py-2 bg-white rounded-2xl">
