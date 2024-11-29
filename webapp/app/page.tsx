@@ -1,4 +1,4 @@
-import { LearnMore } from "./components/learn-more";
+
 import screenshotDevices from "./images/user-button@2xrl.webp";
 import signIn from "./images/sign-in@2xrl.webp";
 import verify from "./images/verify@2xrl.webp";
@@ -9,34 +9,16 @@ import "./home.css";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "./components/footer";
-
-import { CARDS } from "./consts/cards";
-import { ClerkLogo } from "./components/clerk-logo";
-import { NextLogo } from "./components/next-logo";
+import MobileNavBar from "./components/MobileNavBar";
+import NavBar from "./components/NavBar";
 
 export default function Home() {
   return (
     <>
+      <MobileNavBar />
+      <NavBar />
       <div className="relative gap-3">
-        {/* <SignedIn>
-          <Link
-            href="/dashboard"
-            className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold"
-          >
-            Dashboard
-          </Link>
-        </SignedIn> */}
-
-        {/* <SignedOut>
-          <SignInButton>
-            <button className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold">
-              Sign in
-            </button>
-          </SignInButton>
-          //{" "}
-        </SignedOut> */}
-
-        {/* <Footer /> */}
+        
       </div>
     </>
   );

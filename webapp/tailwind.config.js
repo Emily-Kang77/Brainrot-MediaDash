@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
+    darkMode: 'selector',
+    content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -28,4 +29,8 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
+  plugins: [
+    require('daisyui'),
+      require("tailwindcss-animate")
+],
 };
