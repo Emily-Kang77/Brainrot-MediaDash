@@ -25,6 +25,10 @@ const PopoverComponent = () => {
             </div>
 
             <div>
+              <Link href="/user-profile">User Profile</Link>
+            </div>
+
+            <div>
               <SignOutButton>
                 <button>Sign out</button>
               </SignOutButton>

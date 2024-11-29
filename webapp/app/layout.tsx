@@ -1,13 +1,11 @@
-'use client'
 import { ClerkProvider, SignOutButton } from "@clerk/nextjs";
 import "./globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
 import localFont from "next/font/local";
-import { useSearchParams, useRouter } from 'next/navigation';
-import Landing from "./landing/page";
-import NavBar from "./components/NavBar";
 import MobileNavBar from "./components/MobileNavBar";
+import NavBar from "./components/NavBar";
+import { FocusProvider } from "../utils/FocusProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,9 +22,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
-    <html lang="en" className={`dark ${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable}`}
+    >
       <ClerkProvider
         appearance={{
           variables: { colorPrimary: "#000000" },
@@ -45,11 +45,11 @@ export default function RootLayout({
         }}
       >
         <body className={`min-h-screen flex flex-col antialiased`}>
+          <FocusProvider>
+            <MobileNavBar />
+            <NavBar />
+          </FocusProvider>
           {children}
-
-          {/* <SignOutButton >
-            <button>Sign out </button>
-          </SignOutButton> */}
         </body>
       </ClerkProvider>
 

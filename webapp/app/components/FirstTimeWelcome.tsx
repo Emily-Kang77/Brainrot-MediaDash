@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const FirstTimeWelcome = () => {
-  return (
-    <div>first-time-welcome</div>
-  )
-}
+  return <div>first-time-welcome</div>;
+};
 
-export default FirstTimeWelcome
+export default FirstTimeWelcome;
