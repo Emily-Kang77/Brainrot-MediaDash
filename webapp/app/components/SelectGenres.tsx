@@ -2,7 +2,13 @@ import React from 'react'
 
 const SelectGenres = () => {
   return (
-    <div>select-genres</div>
+    <div>
+
+      <h1>What media streaming platforms do you use?</h1>
+
+      
+
+    </div>
   )
 }
 
