@@ -49,9 +49,6 @@ function Landing() {
                 <div className="card-body text-center">
                   {card.description}
                 </div>
-              {/* <div className="w-50">
-                <LandingCard key={index} description={card.description} image={card.image}/>
-              </div> */}
               </div>
               
             </CarouselItem>
