@@ -16,7 +16,7 @@ const MobileNavBar = () => {
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 w-full bg-white flex justify-evenly items-center border-t h-20">
+    <div className="md:hidden fixed z-10 bottom-0 left-0 w-full bg-white flex justify-evenly items-center border-t h-20">
       <div className="flex flex-col items-center cursor-pointer">
         <div
           onClick={() => {
