@@ -1,7 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI as gemini
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from mediaDash_backend import get_scraping_instructions
+from mediaDash_backend import LLMRecommendations
 import pandas as pd
 import os
 
@@ -78,8 +78,8 @@ def preprocess_search(user_data):
         
         temp_csv_path = "temp_query.csv"
         query_data.to_csv(temp_csv_path, index=False)
-        scraped_data = get_scraping_instructions(temp_csv_path)
-        res.append({"query": query, "results": scraped_data})
+        tempRec = LLMRecommendations(temp_csv_path)
+        res.append({"query": query, "results": tempRec})
         os.remove(temp_csv_path)
     
     finalrec = process_search_results(res)

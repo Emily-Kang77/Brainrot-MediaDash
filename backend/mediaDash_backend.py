@@ -1,5 +1,4 @@
 import sys
-import requests
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI as gemini
 from langchain.prompts import PromptTemplate
@@ -22,10 +21,8 @@ def parse_csv(csv_file_path):
     user_data = df.iloc[0].to_dict()
     return user_data
 
-def get_scraping_instructions():
-    user_input = input("Enter keywords for movie recommendations (comma-separated): ")
-    keywords = user_input.strip()
-
+def get_scraping_instructions(keywords):
+    #keywords is genre in this case, not to be confused with mood_keywords
     search = tmdb.Search()
     ia = IMDb()
 
@@ -72,19 +69,22 @@ def get_scraping_instructions():
     tmdb_results.sort(key=lambda x: x.get("popularity", 0), reverse=True)
     imdb_results.sort(key=lambda x: x.get("popularity", 0), reverse=True)
 
-    return tmdb_results[:50], imdb_results[:50]  # Return top 2 results from each source
+    return tmdb_results[:50], imdb_results[:50]  # Return top 50 results from each source
 
 
 # llm call to pass the scraped data and make a recommendation
-def generate_recommendations(user_data, tmdb_results, imdb_results):
+def generate_recommendations(genre, mood_keywords, search_query, previous_titles, tmdb_results, imdb_results):
     llm = gemini(model="gemini-pro", temperature=0.7)
 
     prompt = PromptTemplate.from_template(
-        """
-    Based on the user's preferences and the scraped data, provide personalized media recommendations:
+    """
+    Based on the search query, the user's mood, their desired genre, and the scraped data, provide personalized media recommendations:
     
     User preferences:
-    Keywords: {keywords}
+    Genre: {genre}
+    Mood keywords: {mood_keywords}
+    Search query: {search_query}
+    Previously enjoyed titles: {previous_titles}
     
     TMDb results:
     {tmdb_results}
@@ -92,20 +92,48 @@ def generate_recommendations(user_data, tmdb_results, imdb_results):
     IMDb results:
     {imdb_results}
     
-    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's keywords. 
+    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's preferences. 
     Consider both TMDb and IMDb results when making recommendations.
     For each recommendation, include the title, release date, and a brief explanation of why it's recommended.
+    Do NOT recommend any titles listed in the previously enjoyed titles, but you can use them to suggest similar content.
     """
     )
 
     chain = LLMChain(llm=llm, prompt=prompt)
     response = chain.invoke({
-        "keywords": user_data,
+        "genre": genre,
+        "mood_keywords": mood_keywords,
+        "search_query": search_query,
+        "previous_titles": previous_titles,
         "tmdb_results": str(tmdb_results),
         "imdb_results": str(imdb_results)
     })
     return response["text"]
 
+def LLMRecommendations(temp_csv_path):
+    user_data = parse_csv(temp_csv_path)
+    
+    #parse csv data
+    genre = user_data.get("genre", "")
+    mood_keywords = user_data.get("mood_keywords", "")
+    search_query = user_data.get("search_query", "")
+    previous_titles = user_data.get("previous_titles","")
+    
+    tmdb_results, imdb_results = get_scraping_instructions(genre)
+    
+    recommendations = generate_recommendations(
+            genre, 
+            mood_keywords, 
+            search_query, 
+            previous_titles, 
+            tmdb_results, 
+            imdb_results
+        )    
+    return recommendations
+    
+    
+    
+""" 
 def main():
     print("Starting MediaDash recommendation system...")
     while True:
@@ -140,3 +168,4 @@ if __name__ == "__main__":
         exit(1)
 
     main()
+"""
