@@ -1,6 +1,14 @@
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 
-const ContentCard = ({ imageUrl, title, date, creator, platform }) => {
+interface ContentCardProps {
+  imageUrl: string;
+  title: string;
+  date: string;
+  creator: string;
+  platform: string;
+}
+
+const ContentCard = ({ imageUrl, title, date, creator, platform }: ContentCardProps ) => {
   return (
     <div className="space-y-4">
       <div className="w-[150px] lg:w-[180px] overflow-hidden rounded-md shadow-[0_2px_10px] shadow-blackA4">
