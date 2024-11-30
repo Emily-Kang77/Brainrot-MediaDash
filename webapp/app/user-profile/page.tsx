@@ -10,7 +10,7 @@ import { PiSignOutBold } from "react-icons/pi";
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from "next/navigation";
 
-export default async function UserProfilePage() {
+export default function UserProfilePage() {
   const router = useRouter();
 
   return (
