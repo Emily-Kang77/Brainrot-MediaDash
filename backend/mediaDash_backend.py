@@ -125,9 +125,15 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
     IMDb results:
     {imdb_results}
 
-    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's preferences.
+    Provide 5 recommendations from the given results, explaining why each is suitable based on the user's preferences.
     Consider both TMDb and IMDb results when making recommendations.
-    For each recommendation, include the title, release date, and a brief explanation of why it's recommended.
+
+    For each recommendation, include the:
+    1. title
+    2. Director
+    3. Available streaming platforms
+    4. A brief explanation of why it's recommended.
+
     Do NOT recommend any titles listed in the previously enjoyed titles, but you can use them to suggest similar content.
     """
     )

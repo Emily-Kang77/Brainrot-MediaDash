@@ -31,7 +31,7 @@ def read_root():
     return {"message": "Hello, World!"}
 
 @app.post("/user_query")
-async def user_query(query: Query):
+async def user_query(query: Query) -> list[dict]:
     user_query = query.query
 
     if not user_query.strip():
@@ -45,7 +45,7 @@ async def user_query(query: Query):
         "subscriptions": ["Netflix", "Hulu"]
     }
 
-    user_id = "12345"
+    user_id = query.user_id
     res = preprocess_search(user_data)
     res = parse_recommendations(res)
 

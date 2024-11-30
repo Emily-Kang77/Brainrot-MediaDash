@@ -19,19 +19,31 @@ def parse_recommendations(recommendation_text: str) -> dict:
         [
             (
                 "system",
-                "You are a helpful assistant that provides recommendations. Respond in the following JSON format:",
+                "You are an expert who parses recommendations into the requested JSON format. Respond in the following JSON format:",
             ),
             (
                 "human",
                 """
+                ### Task:
+                Parse the given raw text into a JSON array of movie recommendations. Use the following JSON format for reference:
+                Make sure you find the respective JSON keys for each movie recommendation.
+                The JSON keys are: Title, Reason, Creator, Platform - All of which exist in the given raw text.
+
+                The key "Reason" has its description in the "Recommendation" or "Explanation" section of the raw text.
                 [
                     {{
                         "Title": "Justice League Action",
-                        "Reason": "This animated series aligns with the user's preference for action movies with thrilling car chases and explosions, showcasing exciting adventures with iconic DC superheroes."
+                        "Reason": "This animated series aligns with the user's preference for action movies with thrilling car chases and explosions, showcasing exciting adventures with iconic DC superheroes.",
+                        "Creator": "Sam Register",
+                        'Platform': "Amazon Prime Video",
+                        "Ratings": null
                     }},
                     {{
                         "Title": "Missing in Action",
-                        "Reason": "This classic action film meets the user's desire for adrenaline-pumping action thrillers with intense fight scenes, featuring a former POW on a mission to rescue American prisoners of war."
+                        "Reason": "This classic action film meets the user's desire for adrenaline-pumping action thrillers with intense fight scenes, featuring a former POW on a mission to rescue American prisoners of war.",
+                        "Creator": "Joseph Zito",
+                        'Platform': "HBO Max",
+                        "Ratings": null
                     }}
                 ]
 
@@ -51,6 +63,7 @@ def parse_recommendations(recommendation_text: str) -> dict:
             "user_query": recommendation_text
         }
     )
+    print(result.content)
     result = (
         result.content.strip("'```json\\n")  # Remove leading markdown formatting
         .strip("\\n```\\n")  # Remove trailing markdown formatting
@@ -62,4 +75,5 @@ def parse_recommendations(recommendation_text: str) -> dict:
     result = json.loads(result)
 
     return result
+
 
