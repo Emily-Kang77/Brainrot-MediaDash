@@ -3,9 +3,9 @@ import ContentCard from "../components/ContentCard";
 
 export default async function DashboardPage() {
   return (
-    <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-6 text-white space-y-10">
-      <div className="space-y-5">
-        <div className="flex justify-between">
+    <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-14 text-white space-y-10">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">
             We think you&#39;ll like these
           </div>
@@ -13,7 +13,7 @@ export default async function DashboardPage() {
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -52,8 +52,8 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">
             We think you&#39;ll like these
           </div>
@@ -61,7 +61,7 @@ export default async function DashboardPage() {
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -93,14 +93,14 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">Trending in (POP)</div>
           <div className="pr-2 cursor-pointer">
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -132,14 +132,14 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">Trending in (Netflix)</div>
           <div className="pr-2 cursor-pointer">
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}

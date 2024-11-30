@@ -3,46 +3,13 @@ import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { useParams } from "next/navigation";
-import axios from "axios";
 
-export default function SearchResultsPage() {
-  const { query } = useParams();
-  const [result, setResult] = useState<Result[]>([]);
+export default function ExpandableCardDemo() {
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null
   );
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-
-  interface Query {
-    userId: string;
-    query: string;
-  }
-
-  interface Result {
-    title: string;
-    reason: string | null;
-    creator: string | null;
-    platform: string | null;
-    rating: null | number;
-  }
-
-  // const getRecommendations = async (userData: Query) => {
-  //   const response = await axios.post("http://127.0.0.1:8000/user_query", {
-  //     user_id: userData.userId,
-  //     query: userData.query,
-  //   });
-  //   console.log(response);
-  //   setResult(response.data);
-  // };
-
-  // useEffect(() => {
-  //   getRecommendations({
-  //     userId: "123",
-  //     query: query as string,
-  //   });
-  // }, []);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -64,18 +31,7 @@ export default function SearchResultsPage() {
   useOutsideClick(ref, () => setActive(null));
 
   return (
-    <div className="max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
-      <div className="container mx-auto py-8">
-        <h1 className="text-2xl font-bold">Search Results</h1>
-        <p className="mt-2">
-          You searched for: <strong>{query}</strong>
-        </p>
-
-        <div className="mt-4">
-          <p>Displaying results for "{query}"...</p>
-        </div>
-      </div>
-
+    <>
       <AnimatePresence>
         {active && typeof active === "object" && (
           <motion.div
@@ -169,34 +125,34 @@ export default function SearchResultsPage() {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-md md:max-w-lg lg:max-w-2xl mx-auto w-full gap-4 py-1">
+      <ul className="max-w-2xl mx-auto w-full gap-4">
         {cards.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={`card-${card.title}-${id}`}
             onClick={() => setActive(card)}
-            className="p-4 flex flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
-            <div className="flex gap-4 flex-row ">
+            <div className="flex gap-4 flex-col md:flex-row ">
               <motion.div layoutId={`image-${card.title}-${id}`}>
                 <Image
                   width={100}
                   height={100}
                   src={card.src}
                   alt={card.title}
-                  className="h-14 w-14 rounded-lg object-cover object-top"
+                  className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top"
                 />
               </motion.div>
               <div className="">
                 <motion.h3
                   layoutId={`title-${card.title}-${id}`}
-                  className="font-medium text-neutral-800 dark:text-neutral-200 text-left"
+                  className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left"
                 >
                   {card.title}
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${card.description}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-left"
+                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left"
                 >
                   {card.description}
                 </motion.p>
@@ -211,17 +167,7 @@ export default function SearchResultsPage() {
           </motion.div>
         ))}
       </ul>
-
-      <div className="my-16 text-center">
-        <div className="font-medium text-base">
-          Not what you were looking for?
-        </div>
-        <div className="font-normal text-sm">
-          <span className="underline cursor-pointer">More results </span>
-          or search again
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -264,7 +210,7 @@ const cards = [
     title: "Summertime Sadness",
     src: "https://assets.aceternity.com/demos/lana-del-rey.jpeg",
     ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
+    ctaLink: "https://ui.aceternity.com/templates",
     content: () => {
       return (
         <p>
@@ -287,7 +233,7 @@ const cards = [
     title: "Mitran Di Chhatri",
     src: "https://assets.aceternity.com/demos/babbu-maan.jpeg",
     ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
+    ctaLink: "https://ui.aceternity.com/templates",
     content: () => {
       return (
         <p>
@@ -310,7 +256,7 @@ const cards = [
     title: "For Whom The Bell Tolls",
     src: "https://assets.aceternity.com/demos/metallica.jpeg",
     ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
+    ctaLink: "https://ui.aceternity.com/templates",
     content: () => {
       return (
         <p>
@@ -332,7 +278,7 @@ const cards = [
     title: "Stairway To Heaven",
     src: "https://assets.aceternity.com/demos/led-zeppelin.jpeg",
     ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
+    ctaLink: "https://ui.aceternity.com/templates",
     content: () => {
       return (
         <p>
@@ -353,7 +299,7 @@ const cards = [
     title: "Toh Phir Aao",
     src: "https://assets.aceternity.com/demos/toh-phir-aao.jpeg",
     ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
+    ctaLink: "https://ui.aceternity.com/templates",
     content: () => {
       return (
         <p>
@@ -366,26 +312,6 @@ const cards = [
           &quot;Aawarapan&quot; has garnered a massive fan following both in
           India and abroad, solidifying Emraan Hashmi&apos;s status as a
           versatile actor.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Monkey D. Luffy",
-    title: "Sun God Nika",
-    src: "https://images6.alphacoders.com/132/1325915.png",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Monkey D. Luffy, commonly known as "Straw Hat Luffy" or simply "Straw
-          Hat", is the founder, captain, and strongest combatant of the
-          increasingly infamous and powerful Straw Hat Pirates.He fearlessly
-          pursues the legendary treasure of the late Gol D. Roger in order to
-          become the new Pirate King and reach a further, untold dream
-          (currently known to only his crew and closest friends). He believes
-          that being the Pirate King means having the most freedom in the world.
         </p>
       );
     },
