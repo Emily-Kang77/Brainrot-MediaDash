@@ -35,7 +35,10 @@ export default function SearchResultsPage() {
           </div>
           <div className="">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div className="flex justify-between items-center border-t px-6 py-6">
+              <div
+                key={index}
+                className="flex justify-between items-center border-t px-6 py-6"
+              >
                 <div className="flex items-center gap-x-6">
                   <div className="w-[150px] lg:w-[180px] overflow-hidden rounded-md shadow-[0_2px_10px] shadow-blackA4">
                     <AspectRatio.Root ratio={16 / 16}>
