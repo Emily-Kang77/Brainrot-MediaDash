@@ -5,10 +5,15 @@ import { IoSearch } from "react-icons/io5";
 import { FocusContext } from "@/utils/FocusProvider";
 import { useRouter } from "next/navigation";
 
+interface FocusContextType {
+  focus: boolean;
+  setFocus: (focus: boolean) => void;
+}
+
 const SearcBar = () => {
   const router = useRouter();
-  const searchInputRef = useRef(null);
-  const { focus, setFocus } = useContext(FocusContext);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const { focus, setFocus } = useContext(FocusContext) as FocusContextType;
 
   const [query, setQuery] = useState(""); // State to track search input
 
