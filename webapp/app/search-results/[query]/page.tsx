@@ -1,11 +1,14 @@
 "use client";
 
+import axios from "axios";
 import { useParams } from "next/navigation";
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
 import { IoIosArrowForward } from "react-icons/io";
+import { useState, useEffect } from "react";
 
 export default function SearchResultsPage() {
   const { query } = useParams();
+  const [result, setResult] = useState<Result[]>([]);
 
   const imageUrls = [
     "https://images.unsplash.com/photo-1535025183041-0991a977e25b?w=300&dpr=2&q=80",
@@ -14,6 +17,35 @@ export default function SearchResultsPage() {
     "https://fastly.picsum.photos/id/39/3456/2304.jpg?hmac=cc_VPxzydwTUbGEtpsDeo2NxCkeYQrhTLqw4TFo-dIg",
     "https://picsum.photos/200/300?grayscale",
   ];
+
+  interface Query {
+    userId: string;
+    query: string;
+  }
+
+  interface Result {
+    title: string;
+    reason: string | null;
+    creator: string | null;
+    platform: string | null;
+    rating: null | number;
+  }
+
+  const getRecommendations = async (userData: Query) => {
+    const response = await axios.post("http://127.0.0.1:8000/user_query", {
+      user_id: userData.userId,
+      query: userData.query,
+    });
+    console.log(response);
+    setResult(response.data);
+  };
+
+  useEffect(() => {
+    getRecommendations({
+      userId: "123",
+      query: query as string,
+    });
+  }, []);
 
   return (
     <main className="px-screen-320 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440">
@@ -34,7 +66,7 @@ export default function SearchResultsPage() {
             Here&#39;s what we think you&#39;ll like:
           </div>
           <div className="">
-            {Array.from({ length: 5 }).map((_, index) => (
+            {result.slice(0, 5).map((item, index) => (
               <div
                 key={index}
                 className="flex justify-between items-center border-t px-6 py-6"
@@ -45,16 +77,20 @@ export default function SearchResultsPage() {
                       <img
                         className="size-full object-cover"
                         src={imageUrls[index]}
-                        alt="Landscape photograph by Tobias Tullius"
+                        alt="Content thumbnail"
                       />
                     </AspectRatio.Root>
                   </div>
                   <div className="space-y-4">
-                    <div className="font-bold text-lg">{query}</div>
-                    <div className="font-medium text-sm">
-                      1 December | Emily Kang
+                    <div className="font-bold text-lg">
+                      {item.title || "No title"}
                     </div>
-                    <div className="font-medium text-sm ">Tik Tok</div>
+                    <div className="font-medium text-sm">
+                      {"1 December"} | {item.creator || "Emily Kang"}
+                    </div>
+                    <div className="font-medium text-sm ">
+                      {item.platform || "Tik Tok"}
+                    </div>
                   </div>
                 </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import SearchBar from "./SearchBar";
 import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
@@ -9,12 +9,14 @@ import PopoverComponent from "./PopoverComponent";
 
 export default function AppBar() {
   const router = useRouter();
+  const pathname = usePathname(); // Add this
 
   return (
     <SignedIn>
-      <div className="px-2 md:px-6 lg:px-9 2xl:px-10 py-4 flex justify-between items-center">
+      <div className="px-2 md:px-6 lg:px-9 2xl:px-10 py-4 flex justify-between items-center sticky top-0 z-50">
+        
         <button
-          className="px-3 py-1.5 text-white font-semibold bg-red-600 hover:bg-red-700 rounded-lg"
+          className="hidden sm:block px-3 py-1.5 text-white font-semibold bg-red-600 hover:bg-red-700 rounded-lg"
           onClick={() => {
             router.push("/");
           }}
@@ -22,9 +24,12 @@ export default function AppBar() {
           MediaDash
         </button>
 
-        <div>
-          <SearchBar />
+        {/* Conditionally render SearchBar */}
+        {!pathname.includes('user-profile') && (
+          <div className="flex-1 flex justify-center">
+            <SearchBar />
         </div>
+        )}
 
         <div className="hidden lg:flex gap-x-6 xl:gap-x-6">
           <Link

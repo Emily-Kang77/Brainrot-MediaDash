@@ -14,7 +14,7 @@ export default function UserProfilePage() {
   const router = useRouter();
 
   return (
-    <main className="px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-20 lg:py-32">
+    <main className="px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 lg:py-32">
       <div className="max-w-sm md:max-w-md mx-auto">
         <div className="flex items-center gap-x-12 px-10">
           <Avatar.Root className="inline-flex size-[90px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">

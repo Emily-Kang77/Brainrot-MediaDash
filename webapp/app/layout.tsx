@@ -44,12 +44,17 @@ export default function RootLayout({
           },
         }}
       >
-        <body className={`min-h-screen flex flex-col antialiased`}>
+        <body className={`min-h-screen flex flex-col antialiased bg-background-color`}>
           <FocusProvider>
-            <MobileNavBar />
-            <NavBar />
+            <div className="fixed top-0 w-full z-50">
+              <MobileNavBar />
+              <NavBar />
+            </div>
+            <main className="mt-20 overflow-y-auto">
+              {children}
+            </main>
           </FocusProvider>
-          {children}
+          
         </body>
       </ClerkProvider>
 
