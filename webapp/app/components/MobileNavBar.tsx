@@ -9,7 +9,7 @@ import { FocusContext } from "@/utils/FocusProvider";
 
 const MobileNavBar = () => {
   const router = useRouter();
-  const { setFocus } = useContext(FocusContext);
+  const { setFocus } = useContext(FocusContext) as { setFocus: (value: boolean) => void };
 
   const focusSearchInput = () => {
     setFocus(true);
@@ -54,5 +54,4 @@ const MobileNavBar = () => {
     </div>
   );
 };
-
 export default MobileNavBar;

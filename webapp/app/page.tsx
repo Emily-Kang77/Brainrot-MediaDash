@@ -25,7 +25,15 @@ export default function Home() {
   console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
   console.log("Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_KEY)
 
-  const supabase = createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        fetch: (url, options = {}) => fetch(url, options)
+      }
+    }
+  )
 
   useEffect(() => {
     console.log('effect running')
@@ -98,7 +106,7 @@ export default function Home() {
       <NavBar /> */}
       <div className="relative gap-3">
         Hello here's the data?
-        {data && data.map(user => (
+        {data && data.map((user: { user_id: string; name: string }) => (
           <div key={user.user_id}>{user.name}</div>
         ))}
       </div>
