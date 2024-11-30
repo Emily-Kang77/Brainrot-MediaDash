@@ -9,6 +9,7 @@ import csv
 from io import TextIOWrapper
 import gzip
 import tmdbsimple as tmdb
+from dotenv import load_dotenv
 from imdb import IMDb
 from dotenv import load_dotenv
 
@@ -103,20 +104,20 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
     prompt = PromptTemplate.from_template(
     """
     Based on the search query, the user's mood, their desired genre, and the scraped data, provide personalized media recommendations:
-    
+
     User preferences:
     Genre: {genre}
     Mood keywords: {mood_keywords}
     Search query: {search_query}
     Previously enjoyed titles: {previous_titles}
-    
+
     TMDb results:
     {tmdb_results}
-    
+
     IMDb results:
     {imdb_results}
-    
-    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's preferences. 
+
+    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's preferences.
     Consider both TMDb and IMDb results when making recommendations.
     For each recommendation, include the title, release date, and a brief explanation of why it's recommended.
     Do NOT recommend any titles listed in the previously enjoyed titles, but you can use them to suggest similar content.
@@ -136,28 +137,26 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
 
 def LLMRecommendations(temp_csv_path):
     user_data = parse_csv(temp_csv_path)
-    
+
     #parse csv data
     genre = user_data.get("genre", "")
     mood_keywords = user_data.get("mood_keywords", "")
     search_query = user_data.get("search_query", "")
     previous_titles = user_data.get("previous_titles","")
-    
+
     tmdb_results, imdb_results = get_scraping_instructions(genre)
-    
+
     recommendations = generate_recommendations(
-            genre, 
-            mood_keywords, 
-            search_query, 
-            previous_titles, 
-            tmdb_results, 
+            genre,
+            mood_keywords,
+            search_query,
+            previous_titles,
+            tmdb_results,
             imdb_results
-        )    
+        )
     return recommendations
-    
-    
-    
-""" 
+
+"""
 def main():
     print("Starting MediaDash recommendation system...")
     while True:
@@ -187,7 +186,7 @@ def main():
 
 if __name__ == "__main__":
     # Ensure the API key is set
-    if not tmdb.API_KEY:
+    if not :
         print("Error: TMDB_API_KEY environment variable is not set.")
         exit(1)
 
