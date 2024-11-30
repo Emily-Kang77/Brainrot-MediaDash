@@ -12,6 +12,7 @@ import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from imdb import IMDb
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ def get_scraping_instructions(keywords):
     return tmdb_results[:50], imdb_results[:50]
 
 def get_tmdb_results(keywords):
+    st = time.time()
     search = tmdb.Search()
     tmdb_results = []
 
@@ -50,21 +52,25 @@ def get_tmdb_results(keywords):
         print(f"Error searching TMDb for keyword '{keywords}': {str(e)}")
 
     tmdb_results.sort(key=lambda x: x.get("popularity", 0), reverse=True)
+    et = time.time()
+    print(f"Time taken to process TMDb data: {et-st}")
     return tmdb_results
 
 def get_imdb_results(keywords):
+    return ["" for _ in range(50)]
+    st = time.time()
     imdb_results = []
-    
+
     title_basics_path = "title.basics.tsv.gz"
     title_ratings_path = "title.ratings.tsv.gz"
 
     try:
         # Process title basics
         basics_data = process_local_gzip_tsv(title_basics_path)
-        
+
         # Process title ratings
         ratings_data = process_local_gzip_tsv(title_ratings_path)
-        
+
         # Create a dictionary of ratings
         ratings_dict = {row[0]: float(row[1]) for row in ratings_data if row[0] != 'tconst'}
 
@@ -85,12 +91,14 @@ def get_imdb_results(keywords):
         print(f"Error processing IMDb data for keyword '{keywords}': {str(e)}")
 
     imdb_results.sort(key=lambda x: x.get("popularity", 0), reverse=True)
+    et = time.time()
+    print(f"Time taken to process IMDb data: {et-st}")
     return imdb_results
 
 def process_local_gzip_tsv(file_path):
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"The file {file_path} does not exist. Please download the IMDb datasets first.")
-    
+
     with gzip.open(file_path, 'rb') as gz_file:
         with TextIOWrapper(gz_file, encoding='utf-8') as text_file:
             reader = csv.reader(text_file, delimiter='\t')
@@ -174,7 +182,7 @@ def main():
         recommendations = generate_recommendations(user_input, tmdb_recommendations, imdb_recommendations)
         print("\nRecommendations based on your keywords:")
         print(recommendations)
-        
+
         another = input(
             "\nWould you like to search for more movies? (yes/no): "
         ).lower()

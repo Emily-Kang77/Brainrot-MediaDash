@@ -8,3 +8,4 @@ pandas==2.2.3
 python-dotenv==1.0.1
 Requests==2.32.3
 tmdbsimple==2.9.1
+pimdb==0.3.0

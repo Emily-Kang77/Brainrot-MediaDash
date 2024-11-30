@@ -8,6 +8,7 @@ import os
 import re
 import json
 from dotenv import load_dotenv
+from response_body_parser import parse_recommendations
 
 
 def generate_search_queries(user_preferences):
@@ -62,6 +63,7 @@ def process_search_results(queries_results, previous_titles=[]):
     chain = LLMChain(llm=llm, prompt=prompt)
     response = chain.invoke({"queries_results": str(queries_results), "previous_titles": str(previous_titles)})
     return response['text']
+
 def preprocess_search(user_data):
     """
     Main function to preprocess search using multiple AI-generated queries.
@@ -69,7 +71,9 @@ def preprocess_search(user_data):
 
 
     # generate multiple search queries w Gemini
-    search_queries = generate_search_queries(user_data)
+    # Temporaryly commented
+    # search_queries = generate_search_queries(user_data)
+    search_queries = [user_data['query']]
     res = []
 
     for query in search_queries:
@@ -88,7 +92,7 @@ def preprocess_search(user_data):
         os.remove(temp_csv_path)
 
     finalrec = process_search_results(res, user_data["previous_titles"])
-    print(send_recommendations_to_supabase(user_id, finalrec))
+    # print(send_recommendations_to_supabase(user_id, finalrec))
 
     return finalrec
 
@@ -123,6 +127,7 @@ def send_recommendations_to_supabase(user_id, recommendation_text):
 if __name__ == "__main__":
     load_dotenv()
     user_data = {
+        "query": "Funny movie with Liam neeson",
         "genre": "Action",
         "mood_keywords": "exciting",
         "previous_titles": "Mad Max",
@@ -130,4 +135,6 @@ if __name__ == "__main__":
     }
 
     user_id = "12345"
-    preprocess_search(user_data)
+    res = preprocess_search(user_data)
+    res = parse_recommendations(res)
+    print(res)
