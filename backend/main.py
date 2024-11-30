@@ -27,7 +27,7 @@ class Query(BaseModel):
     genre: str | None = None
     mood_keywords: str | None = None
     previous_titles: str | None = None
-    subscriptions: list[str] | None = None
+    platforms: list[str] | None = None
 
 # HTTP Methods
 @app.get("/")
@@ -42,11 +42,12 @@ async def user_query(query: Query):
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
     user_data = {
+        "user_id": query.user_id,
         "query": query.query,
         "genre": query.genre or "",
         "mood_keywords": query.mood_keywords or "",
         "previous_titles": query.previous_titles or "",
-        "subscriptions": query.subscriptions or []
+        "platforms": query.platforms or []
     }
     res = preprocess_search(user_data)
     res = parse_recommendations(res)
