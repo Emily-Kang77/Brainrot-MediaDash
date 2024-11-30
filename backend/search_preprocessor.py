@@ -25,7 +25,7 @@ def generate_search_queries(user_preferences):
     Genre: {genre}
     Mood keywords: {mood_keywords}
     Previously enjoyed titles: {previous_titles}
-    Subscriptions: {subscriptions}
+    platforms: {platforms}
 
     Return the queries as a JSON array of strings, each query optimized for finding relevant content.
     Focus on variety while maintaining relevance to the user's interests.
@@ -82,7 +82,7 @@ def preprocess_search(user_data):
             "genre": user_data["genre"],
             "mood_keywords": user_data["mood_keywords"],
             "previous_titles": user_data["previous_titles"],
-            "subscriptions": user_data.get("subscriptions", "")
+            "platforms": user_data.get("platforms", "")
         }])
 
         temp_csv_path = "temp_query.csv"
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         "genre": "Action",
         "mood_keywords": "exciting",
         "previous_titles": "Mad Max",
-        "subscriptions": ["Netflix", "Hulu"]
+        "platforms": ["Netflix", "Hulu"]
     }
 
     user_id = "12345"
