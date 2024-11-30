@@ -39,7 +39,11 @@ const MobileNavBar = () => {
       </div>
 
       <div className="flex flex-col items-center cursor-pointer">
-        <div>
+        <div
+          onClick={() => {
+            router.push("user-profile/");
+          }}
+        >
           <LuUser size={24} color="black" className="mb-1" />
         </div>
         <div className="text-black">My</div>

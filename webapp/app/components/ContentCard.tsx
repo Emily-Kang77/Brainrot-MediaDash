@@ -1,5 +1,4 @@
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
-import { IoIosArrowForward } from "react-icons/io";
 
 const ContentCard = ({ imageUrl, title, date, creator, platform }) => {
   return (
