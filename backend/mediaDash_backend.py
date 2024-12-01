@@ -133,7 +133,7 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
 
     IMPORTANT RULES:
     - DO NOT recommend any titles listed in previously enjoyed titles
-    - ONLY include movies available on streaming platforms
+    - ONLY include movies available on streaming subscriptions
     - MUST include creator/director information
     - Each explanation should reference user preferences
     - Use TMDb results as primary source
@@ -142,8 +142,8 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
     response = model.generate_content(prompt)
     return response.text
 
-def LLMRecommendations(temp_csv_path):
-    user_data = parse_csv(temp_csv_path)
+def LLMRecommendations(user_data: dict):
+    # user_data = parse_csv(temp_csv_path)
 
     #parse csv data
     genre = user_data.get("genre", "")

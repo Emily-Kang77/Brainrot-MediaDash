@@ -27,7 +27,7 @@ class Query(BaseModel):
     genre: str | None = None
     mood_keywords: str | None = None
     previous_titles: str | None = None
-    platforms: list[str] | None = None
+    subscriptions: list[str] | str | None = None
 
 # HTTP Methods
 @app.get("/")
@@ -47,9 +47,24 @@ async def user_query(query: Query):
         "genre": query.genre or "",
         "mood_keywords": query.mood_keywords or "",
         "previous_titles": query.previous_titles or "",
-        "platforms": query.platforms or []
+        "subscriptions": query.subscriptions or []
     }
     res = preprocess_search(user_data)
     res = parse_recommendations(res)
+
+
+    """
+    parse_recommendations() returns a JSON string with the following format:
+    [
+        {
+            "Title": "Movie Name",
+            "Reason": "Detailed explanation why this movie matches preferences",
+            "Creator": "Director Name",
+            "Platform": "Streaming Service",
+            "Ratings": 8.5
+            "Poster Path": "/path/to/poster.jpg"
+        }
+    ]
+    """
 
     return res

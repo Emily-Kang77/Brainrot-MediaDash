@@ -22,7 +22,7 @@ def generate_search_queries(user_preferences):
     - Genre: {user_preferences['genre']}
     - Mood keywords: {user_preferences['mood_keywords']}
     - Previously enjoyed titles: {user_preferences['previous_titles']}
-    - Platforms: {user_preferences['platforms']}
+    - subscriptions: {user_preferences['subscriptions']}
 
     REQUIREMENTS:
     1. Generate EXACTLY 4 unique search queries
@@ -105,19 +105,29 @@ def preprocess_search(user_data):
     res = []
 
     for query in search_queries:
-        query_data = pd.DataFrame([{
+        # query_data = pd.DataFrame([{
+        #     "search_query": query,
+        #     "genre": user_data["genre"],
+        #     "mood_keywords": user_data["mood_keywords"],
+        #     "previous_titles": user_data["previous_titles"],
+        #     "subscriptions": user_data.get("subscriptions", "")
+        # }])
+
+
+        query_data = {
             "search_query": query,
             "genre": user_data["genre"],
             "mood_keywords": user_data["mood_keywords"],
             "previous_titles": user_data["previous_titles"],
-            "platforms": user_data.get("platforms", "")
-        }])
+            "subscriptions": user_data.get("subscriptions", "")
+        }
 
-        temp_csv_path = "temp_query.csv"
-        query_data.to_csv(temp_csv_path, index=False)
-        tempRec = LLMRecommendations(temp_csv_path)
+
+
+        # query_data.to_csv(temp_csv_path, index=False)
+        tempRec = LLMRecommendations(query_data)
         res.append({"query": query, "results": tempRec})
-        os.remove(temp_csv_path)
+        # os.remove(temp_csv_path)
 
     finalrec = process_search_results(res, user_data["previous_titles"])
     # print(send_recommendations_to_supabase(user_id, finalrec))
@@ -159,7 +169,7 @@ if __name__ == "__main__":
         "genre": "Action",
         "mood_keywords": "exciting",
         "previous_titles": "Mad Max",
-        "platforms": ["Netflix", "Hulu"]
+        "subscriptions": ["Netflix", "Hulu"]
     }
 
     user_id = "12345"
