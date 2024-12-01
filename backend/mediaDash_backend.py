@@ -38,7 +38,8 @@ def get_tmdb_results(keywords):
                 "id": movie.get("id", "No ID available"),
                 "release_date": movie.get("release_date", "No release date available"),
                 "overview": movie.get("overview", "No overview available"),
-                "popularity": movie.get("popularity", 0)
+                "popularity": movie.get("popularity", 0),
+                "poster_path": movie.get("poster_path", "")
             })
     except Exception as e:
         print(f"Error searching TMDb for keyword '{keywords}': {str(e)}")
@@ -97,12 +98,12 @@ def process_local_gzip_tsv(file_path):
             next(reader)  # Skip header
             return list(reader)
 
-def generate_recommendations(genre, mood_keywords, search_query, previous_titles, tmdb_results, imdb_results):
+def generate_recommendations(genre, mood_keywords, search_query, previous_titles, tmdb_results, imdb_results) -> str:
     model = genai.GenerativeModel('gemini-pro')
 
     prompt = f"""
     You are a movie recommendation assistant. Your task is to analyze the provided data and generate recommendations.
-    
+
     INPUT DATA:
     - Genre: {genre}
     - Mood keywords: {mood_keywords}
@@ -119,6 +120,7 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
        - Streaming Platform (ONLY include if available on streaming)
        - Ratings (numerical value)
        - Detailed explanation of recommendation
+       - The Poster path of the respective movie from the provided text
 
     STRICT FORMAT:
     For each recommendation, use this exact format:
@@ -127,6 +129,7 @@ def generate_recommendations(genre, mood_keywords, search_query, previous_titles
     ## Platform: <platform_name>
     ## Ratings: <rating>
     ## Recommendation: <explanation>
+    ## Poster Path: <poster_path>
 
     IMPORTANT RULES:
     - DO NOT recommend any titles listed in previously enjoyed titles
@@ -159,40 +162,3 @@ def LLMRecommendations(temp_csv_path):
             imdb_results
         )
     return recommendations
-
-"""
-def main():
-    print("Starting MediaDash recommendation system...")
-    while True:
-        user_input = input("Enter keywords on your current mood: ")
-        tmdb_recommendations, imdb_recommendations = get_scraping_instructions(user_input)
-        '''
-        print("TMDb Recommendations:")
-        for movie in tmdb_recommendations:
-            print(f"- {movie['title']} ({movie['release_date']})")
-
-        print("\nIMDb Recommendations:")
-        for movie in imdb_recommendations:
-            print(f"- {movie['title']} ({movie['release_date']})")
-        '''
-        recommendations = generate_recommendations(user_input, tmdb_recommendations, imdb_recommendations)
-        print("\nRecommendations based on your keywords:")
-        print(recommendations)
-
-        another = input(
-            "\nWould you like to search for more movies? (yes/no): "
-        ).lower()
-        if another != "yes":
-            break
-
-    print("Thank you for using the Movie Recommendation System!")
-
-
-if __name__ == "__main__":
-    # Ensure the API key is set
-    if not :
-        print("Error: TMDB_API_KEY environment variable is not set.")
-        exit(1)
-
-    main()
-"""

@@ -47,7 +47,7 @@ def generate_search_queries(user_preferences):
     """
 
     response = model.generate_content(prompt)
-    
+
     try:
         queries = json.loads(response.text.strip('```json').strip('```'))
         return queries if isinstance(queries, list) else []
@@ -81,6 +81,7 @@ def process_search_results(queries_results, previous_titles=[]):
     ## Platform: <platform_name>
     ## Ratings: <rating>
     ## Recommendation: <explanation>
+    ## Poster Path: <poster_path>
 
     IMPORTANT:
     - Each recommendation must include ALL required fields

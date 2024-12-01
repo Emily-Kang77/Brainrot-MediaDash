@@ -5,7 +5,7 @@ import google.generativeai as genai
 
 def parse_recommendations(recommendation_text: str) -> dict:
     assert "GOOGLE_API_KEY" in os.environ, "Google API key not found in environment variables."
-    
+
     # Configure the API
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
     model = genai.GenerativeModel('gemini-1.5-pro')
@@ -25,6 +25,7 @@ def parse_recommendations(recommendation_text: str) -> dict:
                 "Creator": {"type": "string"},
                 "Platform": {"type": "string"},
                 "Ratings": {"type": "number", "nullable": true}
+                "Poster Path": {"type": "string"}
             }
         }
     }
@@ -43,6 +44,7 @@ def parse_recommendations(recommendation_text: str) -> dict:
             "Creator": "Director Name",
             "Platform": "Streaming Service",
             "Ratings": 8.5
+            "Poster Path": "/path/to/poster.jpg"
         }
     ]
 
@@ -68,6 +70,6 @@ def parse_recommendations(recommendation_text: str) -> dict:
         .strip("```")
         .strip()
     )
-    
+
     return json.loads(result)
 
