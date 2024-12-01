@@ -32,7 +32,7 @@ export default function HandleAuth() {
               user_id: user.id,
               email: user.emailAddresses[0].emailAddress,
             }, {
-              onConflict: 'user_id'
+              onConflict: 'email'
             });
 
           if (error) throw error;
