@@ -1,8 +1,5 @@
-from langchain_google_genai import ChatGoogleGenerativeAI as gemini
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+import google.generativeai as genai
 from mediaDash_backend import LLMRecommendations
-from supabase import create_client
 import pandas as pd
 import os
 import re
@@ -15,27 +12,44 @@ def generate_search_queries(user_preferences):
     """
     Generate multiple search queries based on user preferences using Gemini AI.
     """
-    llm = gemini(model="gemini-pro", temperature=0.7)
+    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+    model = genai.GenerativeModel('gemini-pro')
 
-    prompt = PromptTemplate.from_template("""
-    Based on the user's preferences, generate 4 different search queries that would help find relevant media content.
-    Consider different aspects and combinations of their preferences.
+    prompt = f"""
+    You are a search query generator. Your task is to create optimized search queries based on user preferences.
 
-    User preferences:
-    Genre: {genre}
-    Mood keywords: {mood_keywords}
-    Previously enjoyed titles: {previous_titles}
-    platforms: {platforms}
+    INPUT DATA:
+    - Genre: {user_preferences['genre']}
+    - Mood keywords: {user_preferences['mood_keywords']}
+    - Previously enjoyed titles: {user_preferences['previous_titles']}
+    - Platforms: {user_preferences['platforms']}
 
-    Return the queries as a JSON array of strings, each query optimized for finding relevant content.
-    Focus on variety while maintaining relevance to the user's interests.
-    """)
+    REQUIREMENTS:
+    1. Generate EXACTLY 4 unique search queries
+    2. Each query should focus on different aspects of user preferences
+    3. Queries should be optimized for media content search
 
-    chain = LLMChain(llm=llm, prompt=prompt)
-    response = chain.invoke(user_preferences)
+    RESPONSE FORMAT:
+    You MUST respond in valid JSON format as follows:
+    ```json
+    [
+        "query1",
+        "query2",
+        "query3",
+        "query4"
+    ]
+    ```
 
+    IMPORTANT:
+    - Return ONLY the JSON array
+    - Each query must be a string
+    - Do not include explanations or additional text
+    """
+
+    response = model.generate_content(prompt)
+    
     try:
-        queries = json.loads(response['text'].strip('```json').strip('```'))
+        queries = json.loads(response.text.strip('```json').strip('```'))
         return queries if isinstance(queries, list) else []
     except json.JSONDecodeError:
         return []
@@ -44,25 +58,38 @@ def process_search_results(queries_results, previous_titles=[]):
     """
     Process and combine results from multiple search queries.
     """
-    llm = gemini(model="gemini-pro", temperature=0.7)
+    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+    model = genai.GenerativeModel('gemini-pro')
 
-    prompt = PromptTemplate.from_template("""
-    Analyze and combine the results from multiple search queries to provide a refined set of recommendations.
-    Remove duplicates and rank the results based on relevance.
+    prompt = f"""
+    You are a recommendation analyzer. Your task is to combine and refine multiple search results.
 
-    Search Results from Multiple Queries:
-    {queries_results}
+    INPUT DATA:
+    - Search Results: {queries_results}
+    - Previous Titles to Exclude: {previous_titles}
 
-    Previous Recommendations to Exclude:
-    {previous_titles}
+    REQUIREMENTS:
+    1. Analyze all search results
+    2. Remove duplicate recommendations
+    3. Exclude all previously watched titles
+    4. Rank by relevance to user preferences
 
-    Provide a consolidated list of the most relevant unique recommendations, excluding previously watched titles.
-    Explain why each recommendation was selected and how it matches the user's preferences.
-    """)
+    RESPONSE FORMAT:
+    You MUST format each recommendation as follows:
+    ## Title: <movie_title>
+    ## Creator: <director_name>
+    ## Platform: <platform_name>
+    ## Ratings: <rating>
+    ## Recommendation: <explanation>
 
-    chain = LLMChain(llm=llm, prompt=prompt)
-    response = chain.invoke({"queries_results": str(queries_results), "previous_titles": str(previous_titles)})
-    return response['text']
+    IMPORTANT:
+    - Each recommendation must include ALL required fields
+    - Explanations must reference user preferences
+    - Only include available streaming content
+    """
+
+    response = model.generate_content(prompt)
+    return response.text
 
 def preprocess_search(user_data):
     """

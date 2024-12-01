@@ -1,22 +1,14 @@
-import sys
-import os
-from langchain_google_genai import ChatGoogleGenerativeAI as gemini
-from langchain.prompts import PromptTemplate
+import google.generativeai as genai
 import pandas as pd
-from langchain.chains.llm import LLMChain
-import requests
-import csv
-from io import TextIOWrapper
-import gzip
+import os
 import tmdbsimple as tmdb
 from dotenv import load_dotenv
 from imdb import IMDb
-from dotenv import load_dotenv
 import time
 
+# Configure the API
 load_dotenv()
-
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 tmdb.API_KEY = TMDB_API_KEY
 print(os.getcwd())
@@ -105,43 +97,47 @@ def process_local_gzip_tsv(file_path):
             next(reader)  # Skip header
             return list(reader)
 
-# llm call to pass the scraped data and make a recommendation
 def generate_recommendations(genre, mood_keywords, search_query, previous_titles, tmdb_results, imdb_results):
-    llm = gemini(model="gemini-pro", temperature=0.7)
+    model = genai.GenerativeModel('gemini-pro')
 
-    prompt = PromptTemplate.from_template(
+    prompt = f"""
+    You are a movie recommendation assistant. Your task is to analyze the provided data and generate recommendations.
+    
+    INPUT DATA:
+    - Genre: {genre}
+    - Mood keywords: {mood_keywords}
+    - Search query: {search_query}
+    - Previously enjoyed titles: {previous_titles}
+    - TMDb results: {tmdb_results}
+    - IMDb results: {imdb_results}
+
+    REQUIREMENTS:
+    1. Provide EXACTLY 5 recommendations from the given results
+    2. Each recommendation MUST include ALL of the following fields:
+       - Title (exact match from TMDb/IMDb results)
+       - Creator/Director (research required)
+       - Streaming Platform (ONLY include if available on streaming)
+       - Ratings (numerical value)
+       - Detailed explanation of recommendation
+
+    STRICT FORMAT:
+    For each recommendation, use this exact format:
+    ## Title: <movie_title>
+    ## Creator: <director_name>
+    ## Platform: <platform_name>
+    ## Ratings: <rating>
+    ## Recommendation: <explanation>
+
+    IMPORTANT RULES:
+    - DO NOT recommend any titles listed in previously enjoyed titles
+    - ONLY include movies available on streaming platforms
+    - MUST include creator/director information
+    - Each explanation should reference user preferences
+    - Use TMDb results as primary source
     """
-    Based on the search query, the user's mood, their desired genre, and the scraped data, provide personalized media recommendations:
 
-    User preferences:
-    Genre: {genre}
-    Mood keywords: {mood_keywords}
-    Search query: {search_query}
-    Previously enjoyed titles: {previous_titles}
-
-    TMDb results:
-    {tmdb_results}
-
-    IMDb results:
-    {imdb_results}
-
-    Provide 3-5 recommendations from the given results, explaining why each is suitable based on the user's preferences.
-    Consider both TMDb and IMDb results when making recommendations.
-    For each recommendation, include the title, release date, and a brief explanation of why it's recommended.
-    Do NOT recommend any titles listed in the previously enjoyed titles, but you can use them to suggest similar content.
-    """
-    )
-
-    chain = LLMChain(llm=llm, prompt=prompt)
-    response = chain.invoke({
-        "genre": genre,
-        "mood_keywords": mood_keywords,
-        "search_query": search_query,
-        "previous_titles": previous_titles,
-        "tmdb_results": str(tmdb_results),
-        "imdb_results": str(imdb_results)
-    })
-    return response["text"]
+    response = model.generate_content(prompt)
+    return response.text
 
 def LLMRecommendations(temp_csv_path):
     user_data = parse_csv(temp_csv_path)
