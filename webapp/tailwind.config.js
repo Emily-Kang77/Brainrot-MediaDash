@@ -1,11 +1,16 @@
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: 'selector',
-    content: [
+  darkMode: "selector",
+  content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -14,7 +19,8 @@ module.exports = {
         "primary-50": "#F4F2FF",
         "success-700": "#027A48",
         "success-50": "#ECFDF3",
-        "background-color": "#0B1215"
+        "background-color": "#0B1215",
+        "base-content": "#FFFFFF",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
@@ -29,9 +35,29 @@ module.exports = {
       },
     },
   },
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          "base-100": "#0B1215",
+          "base-content": "#ffffff",  // white text
+        }
+      }
+    ]
+  },
+  plugins: [addVariablesForColors],
   plugins: [require("daisyui")],
-  plugins: [
-    require('daisyui'),
-      require("tailwindcss-animate")
-],
+  plugins: [require("daisyui"), require("tailwindcss-animate")],
 };
+
+// This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
+function addVariablesForColors({ addBase, theme }) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}

@@ -1,11 +1,21 @@
+'use client'
+
 import { IoIosArrowForward } from "react-icons/io";
 import ContentCard from "../components/ContentCard";
+import { useRouter } from "next/navigation";
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
+
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push("/view-content");
+  };
+
   return (
-    <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-6 text-white space-y-10">
-      <div className="space-y-5">
-        <div className="flex justify-between">
+    <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-14 text-white space-y-10">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">
             We think you&#39;ll like these
           </div>
@@ -13,7 +23,7 @@ export default async function DashboardPage() {
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -24,6 +34,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -36,6 +47,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -47,13 +59,14 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">
             We think you&#39;ll like these
           </div>
@@ -61,7 +74,7 @@ export default async function DashboardPage() {
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -70,6 +83,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -80,6 +94,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -89,18 +104,19 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
       </div>
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">Trending in (POP)</div>
           <div className="pr-2 cursor-pointer">
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -109,6 +125,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -119,6 +136,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -128,18 +146,19 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
       </div>
-      <div className="space-y-5">
-        <div className="flex justify-between">
+      <div className="space-y-2">
+        <div className="flex justify-between px-2">
           <div className="font-bold text-xl">Trending in (Netflix)</div>
           <div className="pr-2 cursor-pointer">
             <IoIosArrowForward />
           </div>
         </div>
-        <div className="flex gap-x-6 lg:gap-x-8">
+        <div className="flex">
           {Array.from({ length: 3 }).map((_, index) => (
             <ContentCard
               key={index}
@@ -148,6 +167,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -158,6 +178,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -167,6 +188,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>

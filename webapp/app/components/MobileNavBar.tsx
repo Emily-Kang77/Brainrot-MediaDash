@@ -7,7 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { LuUser } from "react-icons/lu";
 import { FocusContext } from "@/utils/FocusProvider";
 
-const MobileNavBar = () => {
+export const MobileNavBar = () => {
   const router = useRouter();
   const { setFocus } = useContext(FocusContext) as { setFocus: (value: boolean) => void };
 
@@ -27,7 +27,7 @@ const MobileNavBar = () => {
         </div>
         <div className="text-white">Home</div>
       </div>
-      
+
       {/* This should take you to the dashboard and focus on search intead?? Not sure
       Or just show the search bar only when you click on search, its weird to have search bar
       on user profile screen */}

@@ -7,7 +7,7 @@ interface CardProps {
 
 const LandingCard: React.FC<CardProps> = ({ description, image }) => {
   return (
-    <div className="card bg-base-100 shadow-xl w-80">
+    <div className="card bg-base-100 shadow-xl w-80 base-content" data-theme="mytheme">
       <figure>
         <img src={image} />
       </figure>
