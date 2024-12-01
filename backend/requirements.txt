@@ -5,3 +5,5 @@ python-dotenv==1.0.1
 Requests==2.32.3
 tmdbsimple==2.9.1
 google-generativeai==0.3.2
+uvicorn
+supabase
