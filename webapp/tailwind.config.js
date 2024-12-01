@@ -14,6 +14,7 @@ module.exports = {
         "primary-50": "#F4F2FF",
         "success-700": "#027A48",
         "success-50": "#ECFDF3",
+        "background-color": "#0B1215"
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],

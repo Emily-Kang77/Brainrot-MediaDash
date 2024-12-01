@@ -1,3 +1,5 @@
+"use client";
+
 import { SignOutButton } from "@clerk/nextjs";
 import * as Avatar from "@radix-ui/react-avatar";
 import { BiCategory } from "react-icons/bi";
@@ -6,10 +8,13 @@ import { FaRegBookmark } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { PiSignOutBold } from "react-icons/pi";
 import { IoIosArrowForward } from "react-icons/io";
+import { useRouter } from "next/navigation";
 
-export default async function UserProfilePage() {
+export default function UserProfilePage() {
+  const router = useRouter();
+
   return (
-    <main className="px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-20 lg:py-32">
+    <main className="px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 lg:py-32">
       <div className="max-w-sm md:max-w-md mx-auto">
         <div className="flex items-center gap-x-12 px-10">
           <Avatar.Root className="inline-flex size-[90px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
@@ -42,7 +47,12 @@ export default async function UserProfilePage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between px-2 py-4 border-t cursor-pointer hover:bg-gray-800">
+          <div
+            className="flex items-center justify-between px-2 py-4 border-t cursor-pointer hover:bg-gray-800"
+            onClick={() => {
+              router.push("user-ratings");
+            }}
+          >
             <div className="flex items-center gap-x-1.5">
               <div>
                 <FaRegStar />
@@ -84,9 +94,9 @@ export default async function UserProfilePage() {
                 <PiSignOutBold />
               </div>
               <div>
-                <SignOutButton>
-                  <button>Sign out</button>
-                </SignOutButton>
+                 <SignOutButton>
+                  Sign Out
+                 </SignOutButton>
               </div>
             </div>
             <div>
