@@ -94,9 +94,9 @@ export default function UserProfilePage() {
                 <PiSignOutBold />
               </div>
               <div>
-                <SignOutButton>
-                  <button>Sign out</button>
-                </SignOutButton>
+                 <SignOutButton>
+                  Sign Out
+                 </SignOutButton>
               </div>
             </div>
             <div>

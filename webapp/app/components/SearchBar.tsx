@@ -17,11 +17,11 @@ const SearcBar = () => {
 
   const [query, setQuery] = useState(""); // State to track search input
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && query.trim() !== "") {
       // Navigate to the new page with the search query as a parameter
       router.push(`/search-results/${encodeURIComponent(query)}`);

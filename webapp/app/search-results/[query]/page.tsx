@@ -1,393 +1,171 @@
 "use client";
-import Image from "next/image";
-import React, { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useOutsideClick } from "@/hooks/use-outside-click";
-import { useParams } from "next/navigation";
+
 import axios from "axios";
+import { useParams } from "next/navigation";
+import * as AspectRatio from "@radix-ui/react-aspect-ratio";
+import { IoIosArrowForward } from "react-icons/io";
+import { useState, useEffect } from "react";
+
+import { createClient } from '@/utils/supabase/client'
+import { Query, Result } from "@/app/types";
+import { useUser } from "@clerk/nextjs";
+
+import { Database } from '@/database.types'
+
+type UserData = Database['public']['Tables']['mediaDash_user_data']['Row']
+type Subscriptions = NonNullable<UserData['subscriptions']> // This will be string[]
 
 export default function SearchResultsPage() {
+
+  const { user } = useUser() // Add this to get user details from Clerk
+  const supabase = createClient()
   const { query } = useParams();
+  const [subscriptions, setSubscriptions] = useState<string[]>([]);
   const [result, setResult] = useState<Result[]>([]);
-  const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
-    null
-  );
-  const ref = useRef<HTMLDivElement>(null);
-  const id = useId();
 
-  interface Query {
-    userId: string;
-    query: string;
-  }
+  const imageUrls = [
+    "https://images.unsplash.com/photo-1535025183041-0991a977e25b?w=300&dpr=2&q=80",
+    "https://picsum.photos/200/300",
+    "https://picsum.photos/id/237/200/300",
+    "https://fastly.picsum.photos/id/39/3456/2304.jpg?hmac=cc_VPxzydwTUbGEtpsDeo2NxCkeYQrhTLqw4TFo-dIg",
+    "https://picsum.photos/200/300?grayscale",
+  ];
 
-  interface Result {
-    title: string;
-    reason: string | null;
-    creator: string | null;
-    platform: string | null;
-    rating: null | number;
-  }
-
-  // const getRecommendations = async (userData: Query) => {
-  //   const response = await axios.post("http://127.0.0.1:8000/user_query", {
-  //     user_id: userData.userId,
-  //     query: userData.query,
-  //   });
-  //   console.log(response);
-  //   setResult(response.data);
-  // };
-
-  // useEffect(() => {
-  //   getRecommendations({
-  //     userId: "123",
-  //     query: query as string,
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setActive(false);
-      }
+  const getSubscriptions = async (user_id: string) => {
+    const { data, error } = await supabase
+      .from('mediaDash_user_data')
+      .select('subscriptions')
+      .eq('user_id', user_id) as {
+        data: Pick<UserData, 'subscriptions'>[] | null,
+        error: any
+      };
+    
+    if (error) {
+      console.error('Error fetching subscriptions:', error);
+      return [];
     }
 
-    if (active && typeof active === "object") {
-      document.body.style.overflow = "hidden";
+    console.log("subscriptions:", JSON.stringify(data, null, 2));
+
+    if(!data) {
+      setSubscriptions([])
     } else {
-      document.body.style.overflow = "auto";
+      setSubscriptions(data?.[0]?.subscriptions || [])
     }
+  };
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
+  const getRecommendations = async (userData: Query) => {
+    try {
 
-  useOutsideClick(ref, () => setActive(null));
+      console.log("Sending to backend:", {
+        user_id: userData.user_id,
+        query: userData.query,
+        subscriptions: userData.subscriptions
+      });
+
+      const response = await axios.post('http://127.0.0.1:8000/user_query', {
+        user_id: userData.user_id,
+        query: userData.query,
+        subscriptions: subscriptions
+      });
+      setResult(response.data);
+      console.log(response)
+    } catch (error) {
+      // Handle error
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error:', error.message);
+        // You can set an error state here to show error message to user
+        // setError(error.message);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+      // Set empty results or default state
+      setResult([]);
+    }
+    
+  };
+
+  /**
+   * The effect only runs when user is available
+   * The effect re-runs if user changes
+   * We don't try to access user.id when user is null
+   */
+  useEffect(() => {
+    if (!user) return;
+    
+    // Just handle getting subscriptions
+    getSubscriptions(user.id);
+  }, [user]);
+  
+  useEffect(() => {
+    if (!user || !subscriptions) return;
+  
+    // Handle recommendations after subscriptions are set
+    getRecommendations({
+      user_id: user.id,
+      query: query as string,
+      subscriptions: subscriptions
+    });
+  }, [user, subscriptions]);
 
   return (
-    <div className="max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
-      <div className="container mx-auto py-8">
-        <h1 className="text-2xl font-bold">Search Results</h1>
-        <p className="mt-2">
-          You searched for: <strong>{query}</strong>
-        </p>
+    <main className="px-screen-320 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440">
+      <div className="max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto text-white">
+        <div className="container mx-auto py-6">
+          <h1 className="text-2xl font-bold">Search Results</h1>
+          <p className="mt-2">
+            You searched for: <strong>{query}</strong>
+          </p>
 
-        <div className="mt-4">
-          <p>Displaying results for "{query}"...</p>
+          <div className="mt-4">
+            <p>Displaying results for "{query}"...</p>
+          </div>
         </div>
-      </div>
 
-      <AnimatePresence>
-        {active && typeof active === "object" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 h-full w-full z-10"
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {active && typeof active === "object" ? (
-          <div className="fixed inset-0  grid place-items-center z-[100]">
-            <motion.button
-              key={`button-${active.title}-${id}`}
-              layout
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: 0.05,
-                },
-              }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-              onClick={() => setActive(null)}
-            >
-              <CloseIcon />
-            </motion.button>
-            <motion.div
-              layoutId={`card-${active.title}-${id}`}
-              ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
-            >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
-                <Image
-                  priority
-                  width={200}
-                  height={200}
-                  src={active.src}
-                  alt={active.title}
-                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
-                />
-              </motion.div>
-
-              <div>
-                <div className="flex justify-between items-start p-4">
-                  <div className="">
-                    <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
-                      className="font-bold text-neutral-700 dark:text-neutral-200"
-                    >
-                      {active.title}
-                    </motion.h3>
-                    <motion.p
-                      layoutId={`description-${active.description}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400"
-                    >
-                      {active.description}
-                    </motion.p>
-                  </div>
-
-                  <motion.a
-                    layoutId={`button-${active.title}-${id}`}
-                    href={active.ctaLink}
-                    target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white"
-                  >
-                    {active.ctaText}
-                  </motion.a>
+        <div>
+          <div className="font-bold text-xl py-3">
+            Here&#39;s what we think you&#39;ll like:
+          </div>
+          <div className="">
+          {result.slice(0, 5).map((item, index) => (
+            <div key={index} className="flex justify-between items-center border-t px-6 py-6">
+              <div className="flex items-center gap-x-6">
+                <div className="w-[150px] lg:w-[180px] overflow-hidden rounded-md shadow-[0_2px_10px] shadow-blackA4">
+                  <AspectRatio.Root ratio={16 / 16}>
+                    <img
+                      className="size-full object-cover"
+                      src={imageUrls[index]}
+                      alt="Content thumbnail"
+                    />
+                  </AspectRatio.Root>
                 </div>
-                <div className="pt-4 relative px-4">
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
-                  >
-                    {typeof active.content === "function"
-                      ? active.content()
-                      : active.content}
-                  </motion.div>
+                <div className="space-y-4">
+                  <div className="font-bold text-lg">{item.Title || 'No title'}</div>
+                  <div className="font-medium text-sm">
+                    {'1 December'} | {item.creator || 'Emily Kang'}
+                  </div>
+                  <div className="font-medium text-sm ">{item.platform || 'Tik Tok'}</div>
                 </div>
               </div>
-            </motion.div>
-          </div>
-        ) : null}
-      </AnimatePresence>
-      <ul className="max-w-md md:max-w-lg lg:max-w-2xl mx-auto w-full gap-4 py-1">
-        {cards.map((card, index) => (
-          <motion.div
-            layoutId={`card-${card.title}-${id}`}
-            key={`card-${card.title}-${id}`}
-            onClick={() => setActive(card)}
-            className="p-4 flex flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
-          >
-            <div className="flex gap-4 flex-row ">
-              <motion.div layoutId={`image-${card.title}-${id}`}>
-                <Image
-                  width={100}
-                  height={100}
-                  src={card.src}
-                  alt={card.title}
-                  className="h-14 w-14 rounded-lg object-cover object-top"
-                />
-              </motion.div>
-              <div className="">
-                <motion.h3
-                  layoutId={`title-${card.title}-${id}`}
-                  className="font-medium text-neutral-800 dark:text-neutral-200 text-left"
-                >
-                  {card.title}
-                </motion.h3>
-                <motion.p
-                  layoutId={`description-${card.description}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-left"
-                >
-                  {card.description}
-                </motion.p>
+
+              <div className="cursor-pointer">
+                <IoIosArrowForward />
               </div>
             </div>
-            <motion.button
-              layoutId={`button-${card.title}-${id}`}
-              className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-green-500 hover:text-white text-black mt-4 md:mt-0"
-            >
-              {card.ctaText}
-            </motion.button>
-          </motion.div>
-        ))}
-      </ul>
-
-      <div className="my-16 text-center">
-        <div className="font-medium text-base">
-          Not what you were looking for?
+          ))}
+          </div>
         </div>
-        <div className="font-normal text-sm">
-          <span className="underline cursor-pointer">More results </span>
-          or search again
+
+        <div className="my-16">
+          <div className="font-medium text-base">
+            Not what you were looking for?
+          </div>
+          <div className="font-normal text-sm">
+            <span className="underline cursor-pointer">More results </span>
+            or search again
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
-
-export const CloseIcon = () => {
-  return (
-    <motion.svg
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      exit={{
-        opacity: 0,
-        transition: {
-          duration: 0.05,
-        },
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-black"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-};
-
-const cards = [
-  {
-    description: "Lana Del Rey",
-    title: "Summertime Sadness",
-    src: "https://assets.aceternity.com/demos/lana-del-rey.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Lana Del Rey, an iconic American singer-songwriter, is celebrated for
-          her melancholic and cinematic music style. Born Elizabeth Woolridge
-          Grant in New York City, she has captivated audiences worldwide with
-          her haunting voice and introspective lyrics. <br /> <br /> Her songs
-          often explore themes of tragic romance, glamour, and melancholia,
-          drawing inspiration from both contemporary and vintage pop culture.
-          With a career that has seen numerous critically acclaimed albums, Lana
-          Del Rey has established herself as a unique and influential figure in
-          the music industry, earning a dedicated fan base and numerous
-          accolades.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Babbu Maan",
-    title: "Mitran Di Chhatri",
-    src: "https://assets.aceternity.com/demos/babbu-maan.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Babu Maan, a legendary Punjabi singer, is renowned for his soulful
-          voice and profound lyrics that resonate deeply with his audience. Born
-          in the village of Khant Maanpur in Punjab, India, he has become a
-          cultural icon in the Punjabi music industry. <br /> <br /> His songs
-          often reflect the struggles and triumphs of everyday life, capturing
-          the essence of Punjabi culture and traditions. With a career spanning
-          over two decades, Babu Maan has released numerous hit albums and
-          singles that have garnered him a massive fan following both in India
-          and abroad.
-        </p>
-      );
-    },
-  },
-
-  {
-    description: "Metallica",
-    title: "For Whom The Bell Tolls",
-    src: "https://assets.aceternity.com/demos/metallica.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Metallica, an iconic American heavy metal band, is renowned for their
-          powerful sound and intense performances that resonate deeply with
-          their audience. Formed in Los Angeles, California, they have become a
-          cultural icon in the heavy metal music industry. <br /> <br /> Their
-          songs often reflect themes of aggression, social issues, and personal
-          struggles, capturing the essence of the heavy metal genre. With a
-          career spanning over four decades, Metallica has released numerous hit
-          albums and singles that have garnered them a massive fan following
-          both in the United States and abroad.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Led Zeppelin",
-    title: "Stairway To Heaven",
-    src: "https://assets.aceternity.com/demos/led-zeppelin.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Led Zeppelin, a legendary British rock band, is renowned for their
-          innovative sound and profound impact on the music industry. Formed in
-          London in 1968, they have become a cultural icon in the rock music
-          world. <br /> <br /> Their songs often reflect a blend of blues, hard
-          rock, and folk music, capturing the essence of the 1970s rock era.
-          With a career spanning over a decade, Led Zeppelin has released
-          numerous hit albums and singles that have garnered them a massive fan
-          following both in the United Kingdom and abroad.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Mustafa Zahid",
-    title: "Toh Phir Aao",
-    src: "https://assets.aceternity.com/demos/toh-phir-aao.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          &quot;Aawarapan&quot;, a Bollywood movie starring Emraan Hashmi, is
-          renowned for its intense storyline and powerful performances. Directed
-          by Mohit Suri, the film has become a significant work in the Indian
-          film industry. <br /> <br /> The movie explores themes of love,
-          redemption, and sacrifice, capturing the essence of human emotions and
-          relationships. With a gripping narrative and memorable music,
-          &quot;Aawarapan&quot; has garnered a massive fan following both in
-          India and abroad, solidifying Emraan Hashmi&apos;s status as a
-          versatile actor.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Monkey D. Luffy",
-    title: "Sun God Nika",
-    src: "https://images6.alphacoders.com/132/1325915.png",
-    ctaText: "Play",
-    ctaLink: "https://open.spotify.com/search/one%20piece",
-    content: () => {
-      return (
-        <p>
-          Monkey D. Luffy, commonly known as "Straw Hat Luffy" or simply "Straw
-          Hat", is the founder, captain, and strongest combatant of the
-          increasingly infamous and powerful Straw Hat Pirates.He fearlessly
-          pursues the legendary treasure of the late Gol D. Roger in order to
-          become the new Pirate King and reach a further, untold dream
-          (currently known to only his crew and closest friends). He believes
-          that being the Pirate King means having the most freedom in the world.
-        </p>
-      );
-    },
-  },
-];

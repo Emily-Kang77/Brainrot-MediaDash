@@ -7,16 +7,16 @@ import { IoSearch } from "react-icons/io5";
 import { LuUser } from "react-icons/lu";
 import { FocusContext } from "@/utils/FocusProvider";
 
-const MobileNavBar = () => {
+export const MobileNavBar = () => {
   const router = useRouter();
-  const { setFocus } = useContext(FocusContext);
+  const { setFocus } = useContext(FocusContext) as { setFocus: (value: boolean) => void };
 
   const focusSearchInput = () => {
     setFocus(true);
   };
 
   return (
-    <div className="md:hidden fixed z-10 bottom-0 left-0 w-full bg-white flex justify-evenly items-center border-t h-20">
+    <div className="bg-background-color md:hidden fixed z-10 bottom-0 left-0 w-full flex justify-evenly items-center border-t h-20">
       <div className="flex flex-col items-center cursor-pointer">
         <div
           onClick={() => {
@@ -54,5 +54,4 @@ const MobileNavBar = () => {
     </div>
   );
 };
-
 export default MobileNavBar;

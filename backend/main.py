@@ -24,6 +24,10 @@ app.add_middleware(
 class Query(BaseModel):
     user_id: str
     query: str
+    genre: str | None = None
+    mood_keywords: str | None = None
+    previous_titles: str | None = None
+    platforms: list[str] | None = None
 
 # HTTP Methods
 @app.get("/")
@@ -38,14 +42,13 @@ async def user_query(query: Query):
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
     user_data = {
-        "query": user_query,
-        "genre": "Action",
-        "mood_keywords": "exciting",
-        "previous_titles": "Mad Max",
-        "subscriptions": ["Netflix", "Hulu"]
+        "user_id": query.user_id,
+        "query": query.query,
+        "genre": query.genre or "",
+        "mood_keywords": query.mood_keywords or "",
+        "previous_titles": query.previous_titles or "",
+        "platforms": query.platforms or []
     }
-
-    user_id = "12345"
     res = preprocess_search(user_data)
     res = parse_recommendations(res)
 
