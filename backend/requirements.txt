@@ -1,0 +1,10 @@
+fastapi
+langchain==0.3.9
+langchain_core==0.3.21
+langchain_google_genai==2.0.6
+pandas==2.2.3
+python-dotenv==1.0.1
+Requests==2.32.3
+tmdbsimple==2.9.1
+uvicorn
+supabase
