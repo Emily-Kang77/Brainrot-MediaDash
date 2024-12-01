@@ -92,11 +92,12 @@ const onBoardingPage = () => {
         <button
           className="w-full bg-[#005DC8] text-white hover:bg-blue-800 font-medium text-xl py-1.5 rounded-md"
           onClick={() => {
-            setViewNumber((prevViewNumber) => {
+            setViewNumber((prevViewNumber: number) => {
               if (prevViewNumber === 1) return 2;
               if (prevViewNumber === 2) return 3;
-              router.push("/dashboard");
+              return 3;
             });
+            if (viewNumber === 3) router.push("/dashboard");
           }}
         >
           {viewNumber < 3 ? "Next" : "Go to Home"}
@@ -106,17 +107,17 @@ const onBoardingPage = () => {
   );
 };
 
-const PlatformSelector = ({ platforms }) => {
+const PlatformSelector = ({ platforms }: { platforms: Array<{ id: string; name: string; icon: string }> }) => {
   return (
     <div className="flex flex-wrap justify-center gap-x-2 py-4">
-      {platforms.map((platform) => (
+      {platforms.map((platform: { id: string; name: string; icon: string }) => (
         <Platform key={platform.id} platform={platform} />
       ))}
     </div>
   );
 };
 
-const GenreSelector = ({ genres }) => {
+const GenreSelector = ({ genres }: { genres: string[] }) => {
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-3 py-4">
       {genres.map((genre, index) => (
@@ -126,7 +127,7 @@ const GenreSelector = ({ genres }) => {
   );
 };
 
-const Platform = ({ platform }) => {
+const Platform = ({ platform }: { platform: { id: string; name: string; icon: string } }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   return (
@@ -157,7 +158,7 @@ const Platform = ({ platform }) => {
   );
 };
 
-const Genre = ({ genre }) => {
+const Genre = ({ genre }: { genre: string }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   return (
