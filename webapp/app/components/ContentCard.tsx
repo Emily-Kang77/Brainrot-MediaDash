@@ -6,6 +6,7 @@ interface ContentCardProps {
   date: string;
   creator: string;
   platform: string;
+  onCardClick?: () => void;
 }
 
 const ContentCard = ({
@@ -14,9 +15,10 @@ const ContentCard = ({
   date,
   creator,
   platform,
+  onCardClick,
 }: ContentCardProps) => {
   return (
-    <div className="space-y-4 hover:bg-gray-800 p-4 rounded-xl">
+    <div onClick={onCardClick} className="space-y-4 hover:bg-gray-800 p-4 rounded-xl">
       <div className="w-[150px] lg:w-[180px] overflow-hidden rounded-md shadow-[0_2px_10px] shadow-blackA4">
         <AspectRatio.Root ratio={16 / 16}>
           <img

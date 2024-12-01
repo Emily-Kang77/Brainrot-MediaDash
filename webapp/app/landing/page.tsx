@@ -64,7 +64,7 @@ function Landing() {
           <div className="px-3">
             <button
               className="w-full bg-[#005DC8] hover:bg-blue-800 font-medium text-xl py-1.5 rounded-md"
-              onClick={() => router.push("/onboarding")}
+              onClick={() => router.push("/handle-auth")}
             >
               Get Started
             </button>

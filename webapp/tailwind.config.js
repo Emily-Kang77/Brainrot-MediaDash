@@ -20,6 +20,7 @@ module.exports = {
         "success-700": "#027A48",
         "success-50": "#ECFDF3",
         "background-color": "#0B1215",
+        "base-content": "#FFFFFF",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
@@ -33,6 +34,16 @@ module.exports = {
         "screen-320": "16px",
       },
     },
+  },
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          "base-100": "#0B1215",
+          "base-content": "#ffffff",  // white text
+        }
+      }
+    ]
   },
   plugins: [addVariablesForColors],
   plugins: [require("daisyui")],

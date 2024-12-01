@@ -23,9 +23,9 @@ export const MobileNavBar = () => {
             router.push("/");
           }}
         >
-          <IoHomeOutline size={24} color="black" className="mb-1" />
+          <IoHomeOutline size={24} color="white" className="mb-1" />
         </div>
-        <div className="text-black">Home</div>
+        <div className="text-white">Home</div>
       </div>
 
       {/* This should take you to the dashboard and focus on search intead?? Not sure
@@ -36,9 +36,9 @@ export const MobileNavBar = () => {
         onClick={focusSearchInput}
       >
         <div>
-          <IoSearch size={24} color="black" className="mb-1" />
+          <IoSearch size={24} color="white" className="mb-1" />
         </div>
-        <div className="text-black">Search</div>
+        <div className="text-white">Search</div>
       </div>
 
       <div className="flex flex-col items-center cursor-pointer">
@@ -47,9 +47,9 @@ export const MobileNavBar = () => {
             router.push("user-profile/");
           }}
         >
-          <LuUser size={24} color="black" className="mb-1" />
+          <LuUser size={24} color="white" className="mb-1" />
         </div>
-        <div className="text-black">Me</div>
+        <div className="text-white">Me</div>
       </div>
     </div>
   );

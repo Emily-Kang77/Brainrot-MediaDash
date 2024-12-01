@@ -2,11 +2,15 @@
 
 import { useRouter } from "next/navigation";
 
-const LandingPageNavigation = ({ viewNumber, setViewNumber }) => {
-  const router = useRouter();
+interface LandingPageNavigationProps {
+  viewNumber: number;
+  setViewNumber: React.Dispatch<React.SetStateAction<number>>;
+}
 
+const LandingPageNavigation: React.FC<LandingPageNavigationProps> = ({ viewNumber, setViewNumber }) => {
+  const router = useRouter();
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex justify-center mt-8 text-white">
       <div className="flex space-x-2">
         <div
           className={`h-4 w-4 rounded-full cursor-pointer ${

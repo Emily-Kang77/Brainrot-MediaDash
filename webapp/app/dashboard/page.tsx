@@ -1,7 +1,17 @@
+'use client'
+
 import { IoIosArrowForward } from "react-icons/io";
 import ContentCard from "../components/ContentCard";
+import { useRouter } from "next/navigation";
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
+
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push("/view-content");
+  };
+
   return (
     <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-14 text-white space-y-10">
       <div className="space-y-2">
@@ -24,6 +34,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -36,6 +47,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -47,6 +59,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"YouTube"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
@@ -70,6 +83,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -80,6 +94,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -89,6 +104,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Amul Gaurav"}
               platform={"Instagram"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
@@ -109,6 +125,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -119,6 +136,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -128,6 +146,7 @@ export default async function DashboardPage() {
               date={"29 November"}
               creator={"Audrey Chen"}
               platform={"Spotify"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
@@ -148,6 +167,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           ))}
 
@@ -158,6 +178,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           </div>
           <div className="hidden sm:block">
@@ -167,6 +188,7 @@ export default async function DashboardPage() {
               date={"1 January"}
               creator={"Genie Chen"}
               platform={"Netflix"}
+              onCardClick={handleCardClick}
             />
           </div>
         </div>
