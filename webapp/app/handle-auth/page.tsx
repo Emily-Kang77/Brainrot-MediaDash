@@ -7,64 +7,50 @@ import { useEffect } from "react";
 
 export default function HandleAuth() {
   const { isLoaded: userLoaded, isSignedIn, user } = useUser();
-  const { isLoaded: sessionLoaded, session } = useSession();  // Add sessionLoaded
-  const { signIn, setActive: setSignInActive } = useSignIn();
-  const { signUp, setActive: setSignUpActive } = useSignUp();
+  const { isLoaded: sessionLoaded, session } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    // const handleAuth = async() => {
-    //   // Wait for both user and session to load
-    //   if (!userLoaded || !sessionLoaded) {
-    //     console.log("Still loading...", { userLoaded, sessionLoaded });
-    //     return;
-    //   }
-
-    //   console.log("Auth state:", { isSignedIn, user, session });
-
-    //   if (isSignedIn && session) {
-    //     const sessionData = {
-    //       getToken: async () => await session.getToken(),
-    //       userId: user.id,
-    //     };
-    //     await createClerkSupabaseClient(sessionData);
-
-    //     const isFirstSignIn = user.lastSignInAt === user.createdAt;
-    //     console.log("Sign in check:", { isFirstSignIn, lastSignIn: user.lastSignInAt, createdAt: user.createdAt });
-        
-    //     if (isFirstSignIn) {
-    //       console.log("➡️ First time user - to onboarding");
-    //       router.push('/onboarding');
-    //     } else {
-    //       console.log("➡️ Returning user - to dashboard");
-    //       router.push('/dashboard');
-    //     }
-    //   } else {
-    //     console.log("➡️ Not signed in - to sign-in");
-    //     router.push('/sign-in');
-    //   }
-    // }
-    // Just show onboarding to everyone. Always. 
     const handleAuth = async() => {
-        if (!userLoaded || !sessionLoaded) {
-          console.log("Still loading...", { userLoaded, sessionLoaded });
-          return;
-        }
-  
-        if (isSignedIn && session) {
-          // Just go to onboarding every time!
-          console.log("➡️ Always to onboarding!");
-          router.push('/onboarding');
-        } else {
-          router.push('/sign-in');
-        }
+      if (!userLoaded || !sessionLoaded) {
+        console.log("Still loading...");
+        return;
       }
 
+      if (isSignedIn && session && user) {
+        try {
+          // Create Supabase client
+          const supabase = createClerkSupabaseClient({
+            userId: user.id,
+            getToken: () => session.getToken({ template: 'supabase' })
+          });
+
+          // Write user data to Supabase
+          const { error } = await supabase
+            .from('mediaDash_user_data')
+            .upsert({ 
+              user_id: user.id,
+              email: user.emailAddresses[0].emailAddress,
+            }, {
+              onConflict: 'user_id'
+            });
+
+          if (error) throw error;
+          console.log('Successfully synced user data to Supabase');
+          // Always redirect to onboarding for now
+          router.push('/onboarding');
+          
+        } catch (error) {
+          console.error('Error syncing to Supabase:', error);
+        }
+      } else {
+        router.push('/sign-in');
+      }
+    }
+
     handleAuth();
-  }, [userLoaded, sessionLoaded, isSignedIn, user, session, router]);  // Add sessionLoaded to deps
+  }, [userLoaded, sessionLoaded, isSignedIn, user, session, router]);
 
-
-  // You could return a loading state here while the auth is being handled
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
