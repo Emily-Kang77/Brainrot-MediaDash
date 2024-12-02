@@ -1,6 +1,7 @@
 "use client";
 
 import ContentView from '@/app/components/ContentView';
+import { Result } from '../types';
 
 // Sample data type
 interface Content {
@@ -26,7 +27,6 @@ export default function ContentPage() {
   return (
     <div className="bg-background-color px-screen-320 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440">
       <ContentView
-        content={sampleContent}
         onClose={() => window.history.back()} // or use router.back()
       />
     </div>
