@@ -82,11 +82,6 @@ const onBoardingPage = () => {
         )}
       </div>
 
-      {viewNumber === 2 && (
-        <div className="text-xl text-white pb-10">
-          List will continue I ran out of genres I could think of lol
-        </div>
-      )}
 
       <div className="px-1">
         <button

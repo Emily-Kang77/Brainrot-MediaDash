@@ -8,9 +8,12 @@ export default function DashboardPage() {
 
   const router = useRouter();
 
+  // Hardcoded for now 
   const handleCardClick = () => {
-    router.push("/view-content");
+    const url = `/view-content?imageUrl=https://picsum.photos/200/300&title=Example%20Content%20Title&creator=John%20Doe&platform=https://example.com&description=This%20is%20an%20example%20description&ratings=5`;
+    router.push(url);
   };
+
 
   return (
     <main className="max-w-[85rem] mx-auto px-screen-320 md:px-screen-768 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440 py-14 text-white space-y-10">

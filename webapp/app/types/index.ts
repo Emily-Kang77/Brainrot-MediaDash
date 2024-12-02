@@ -9,9 +9,10 @@ export interface Query {
 
 export interface Result {
     Title: string;
-    reason: string | null;
-    creator: string | null;
-    platform: string | null;
-    rating: null | number;
+    Reason: string | null;
+    Creator: string | null;
+    Platform: string | null;
+    Ratings: null | number;
+    'Poster Path': string | undefined;
 }
 

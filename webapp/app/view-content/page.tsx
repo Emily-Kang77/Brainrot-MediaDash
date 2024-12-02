@@ -1,6 +1,8 @@
 "use client";
 
 import ContentView from '@/app/components/ContentView';
+import { Result } from '../types';
+import { Suspense } from 'react';
 
 // Sample data type
 interface Content {
@@ -25,10 +27,11 @@ const sampleContent: Content = {
 export default function ContentPage() {
   return (
     <div className="bg-background-color px-screen-320 lg:px-screen-992 xl:px-screen-1200 2xl:px-screen-1440">
-      <ContentView
-        content={sampleContent}
-        onClose={() => window.history.back()} // or use router.back()
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ContentView
+          onClose={() => window.history.back()} // or use router.back()
+        />
+      </Suspense>
     </div>
   );
 }
