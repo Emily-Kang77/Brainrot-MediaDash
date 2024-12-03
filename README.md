@@ -6,6 +6,8 @@ Demo: https://vimeo.com/1035080951
 
 MediaDash is an innovative entertainment manager and recommender that brings all your media subscriptions and recommendations into one place, saving you time and enhancing your content discovery experience.
 
+This was made for the BrainRot Hackathon.
+
 ## Problem Statement
 
 Most users of social media and streaming platforms utilize more than just one app. However, it's difficult for users to find the content they want to see because there's so much content dispersed across platforms, resulting in users wasting their time through doom scrolling across multiple platforms.
