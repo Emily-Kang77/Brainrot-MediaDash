@@ -1,5 +1,9 @@
 # MediaDash: Your Unified Entertainment Hub
 
+Link: https://brainrot-media-dash.vercel.app
+
+Demo: https://vimeo.com/1035080951
+
 MediaDash is an innovative entertainment manager and recommender that brings all your media subscriptions and recommendations into one place, saving you time and enhancing your content discovery experience.
 
 ## Problem Statement
